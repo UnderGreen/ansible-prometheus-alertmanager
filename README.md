@@ -1,4 +1,4 @@
-# Ansible Role: prometheus-alertmanager
+# Ansible Role: prometheus-alertmanager [![Build Status](https://travis-ci.org/UnderGreen/ansible-prometheus-alertmanager.svg?branch=master)](https://travis-ci.org/UnderGreen/ansible-prometheus-alertmanager)
 
 An Ansible role that installs Prometheus Alertmanager server on Ubuntu-based machines with systemd.
 
