@@ -1,0 +1,89 @@
+---
+
+- name: install needed packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - curl
+    - tar
+    - bzip2
+
+- name: create prometheus system group
+  group:
+    name: "{{ prometheus_alertmanager_group }}"
+    system: yes
+    state: present
+
+- name: create prometheus system user
+  user:
+    name: "{{ prometheus_alertmanager_user }}"
+    system: yes
+    shell: "/sbin/nologin"
+    group: "{{ prometheus_alertmanager_group }}"
+    createhome: no
+
+- name: create prometheus directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ prometheus_alertmanager_user }}"
+    group: "{{ prometheus_alertmanager_group }}"
+    mode: 0755
+  with_items:
+    - "{{ prometheus_alertmanager_root_dir }}"
+    - "{{ prometheus_alertmanager_dist_dir }}"
+    - "{{ prometheus_alertmanager_config_dir }}"
+    - "{{ prometheus_alertmanager_templates_dir }}"
+    - "{{ prometheus_alertmanager_config_dir }}/conf.d"
+    - "{{ prometheus_alertmanager_db_dir }}"
+    
+- name: download prometheus server binary
+  get_url:
+    url: "https://github.com/prometheus/alertmanager/releases/download/v{{ prometheus_alertmanager_version }}/{{ prometheus_alertmanager_release_name }}.tar.gz"
+    dest: "{{ prometheus_alertmanager_dist_dir }}"
+
+- name: unarchive binary tarball
+  unarchive:
+    copy: no
+    src: "{{ prometheus_alertmanager_dist_dir }}/{{ prometheus_alertmanager_release_name }}.tar.gz"
+    dest: "{{ prometheus_alertmanager_dist_dir }}"
+    creates: "{{ prometheus_alertmanager_dist_dir }}/{{ prometheus_alertmanager_release_name }}/alertmanager"
+  register: prometheus_alertmanager_updated
+  notify:
+    - restart alertmanager
+
+- name: update group and owner for files
+  file:
+    path: "{{ prometheus_alertmanager_release_name }}"
+    state: directory
+    recurse: yes
+    owner: "{{ prometheus_alertmanager_user}}"
+    group: "{{ prometheus_alertmanager_group }}"
+  when: prometheus_alertmanager_updated | changed
+  
+- name: create symlink to the current release
+  file:
+    src: "{{ prometheus_alertmanager_dist_dir }}/{{ prometheus_alertmanager_release_name }}"
+    path: "{{ prometheus_alertmanager_root_dir }}/current"
+    state: link
+
+- name: create systemd service unit
+  template:
+    src: etc/systemd/system/prometheus-alertmanager.service.j2
+    dest: /etc/systemd/system/prometheus-alertmanager.service
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - service reenable
+    - restart alertmanager
+
+- name: ensure alertmanager service is enabled
+  service:
+    name: prometheus-alertmanager
+    enabled: yes
+
+- name: include alertmanager configuration
+  include: configuration.yml
+  tags: ['prometheus-alertmanager-configuration']

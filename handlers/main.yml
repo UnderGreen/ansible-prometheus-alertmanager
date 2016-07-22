@@ -1,0 +1,14 @@
+---
+
+- name: service reenable
+  command: systemctl reenable prometheus-alertmanager.service
+
+- name: restart alertmanager
+  service:
+    name: prometheus-alertmanager
+    state: restarted
+
+- name: reload alertmanager
+  service:
+    name: prometheus-alertmanager
+    state: reloaded
