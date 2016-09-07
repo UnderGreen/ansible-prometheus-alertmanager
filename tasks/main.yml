@@ -37,6 +37,7 @@
     - "{{ prometheus_alertmanager_templates_dir }}"
     - "{{ prometheus_alertmanager_config_dir }}/conf.d"
     - "{{ prometheus_alertmanager_db_dir }}"
+    - "{{ prometheus_alertmanager_log_dir }}"
     
 - name: download prometheus server binary
   get_url:
@@ -75,8 +76,20 @@
     owner: root
     group: root
     mode: 0644
+  when: ansible_service_mgr == 'systemd'
   notify:
     - service reenable
+    - restart alertmanager
+    
+- name: create init service unit
+  template:
+    src: etc/init/prometheus-alertmanager.conf.j2
+    dest: /etc/init/prometheus-alertmanager.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_service_mgr == 'upstart'
+  notify:
     - restart alertmanager
 
 - name: ensure alertmanager service is enabled

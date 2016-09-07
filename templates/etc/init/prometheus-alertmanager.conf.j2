@@ -1,0 +1,14 @@
+description "Prometheus Alertmanager"
+start on (local-filesystems and net-device-up IFACE!=lo)
+stop on runlevel [016]
+
+respawn
+setuid {{ prometheus_alertmanager_user }}
+setgid {{ prometheus_alertmanager_group }}
+
+script
+  exec >> "{{ prometheus_alertmanager_log_dir }}/alertmanager.log"
+  exec 2>&1
+  exec {{ prometheus_alertmanager_bin_dir }}/alertmanager {% for flag, flag_value in prometheus_alertmanager_config_flags.iteritems() %}-{{ flag }}={{ flag_value }} {% endfor %}
+
+end script

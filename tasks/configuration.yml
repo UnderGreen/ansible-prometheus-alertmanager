@@ -25,6 +25,7 @@
     remote_src: true
     owner: "{{ prometheus_alertmanager_user }}"
     group: "{{ prometheus_alertmanager_group }}"
+    delimiter: '\n### START FRAGMENT ###'
     mode: 0644
   notify:
     - reload alertmanager

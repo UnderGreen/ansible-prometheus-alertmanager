@@ -15,8 +15,10 @@ prometheus_alertmanager_config_dir: /etc/prometheus/alertmanager
 prometheus_alertmanager_templates_dir: "{{ prometheus_alertmanager_config_dir }}/templates"
 prometheus_alertmanager_pid_path: /var/run/prometheus-alertmanager.pid
 prometheus_alertmanager_db_dir: /var/lib/prometheus/alertmanager
+prometheus_alertmanager_log_dir: /var/log/prometheus
 
 prometheus_alertmanager_listen_address: ':9093'
+prometheus_alertmanager_external_url: 'http://localhost:9093/'
 
 prometheus_alertmanager_templates_files: []
 
@@ -40,3 +42,4 @@ prometheus_alertmanager_config_flags:
   'config.file': '{{ prometheus_alertmanager_config_dir }}/alertmanager.yml'
   'storage.path': '{{ prometheus_alertmanager_db_dir }}'
   'web.listen-address': '{{ prometheus_alertmanager_listen_address }}'
+  'web.external-url': '{{ prometheus_alertmanager_external_url }}'
