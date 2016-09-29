@@ -1,6 +1,6 @@
 ---
 
-prometheus_alertmanager_version: 0.3.0
+prometheus_alertmanager_version: 0.4.2
 
 prometheus_alertmanager_user: prometheus
 prometheus_alertmanager_group: prometheus

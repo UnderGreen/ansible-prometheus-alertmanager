@@ -39,7 +39,7 @@
     - "{{ prometheus_alertmanager_db_dir }}"
     - "{{ prometheus_alertmanager_log_dir }}"
     
-- name: download prometheus server binary
+- name: download alertmanager binary
   get_url:
     url: "https://github.com/prometheus/alertmanager/releases/download/v{{ prometheus_alertmanager_version }}/{{ prometheus_alertmanager_release_name }}.tar.gz"
     dest: "{{ prometheus_alertmanager_dist_dir }}"
