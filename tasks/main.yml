@@ -42,7 +42,7 @@
 - name: download alertmanager binary
   get_url:
     url: "https://github.com/prometheus/alertmanager/releases/download/v{{ prometheus_alertmanager_version }}/{{ prometheus_alertmanager_release_name }}.tar.gz"
-    dest: "{{ prometheus_alertmanager_dist_dir }}"
+    dest: "{{ prometheus_alertmanager_dist_dir }}/{{ prometheus_alertmanager_release_name }}.tar.gz"
 
 - name: unarchive binary tarball
   unarchive:

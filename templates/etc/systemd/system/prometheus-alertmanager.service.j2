@@ -1,15 +1,17 @@
+                                                                                                                                                           
 [Unit]
 Description=Prometheus Alertmanager
 After=network.target
 
 [Service]
 Type=simple
-PIDFile={{ prometheus_alertmanager_pid_path }}
-User={{ prometheus_alertmanager_user }}
-Group={{ prometheus_alertmanager_group }}
+PIDFile=/var/run/prometheus-alertmanager.pid
+User=prometheus
+Group=prometheus
 ExecReload=/bin/kill -HUP $MAINPID
-ExecStart={{ prometheus_alertmanager_bin_dir }}/alertmanager {% for flag, flag_value in prometheus_alertmanager_config_flags.iteritems() %}-{{ flag }}={{ flag_value }} {% endfor %}
-
+ExecStart=/opt/prometheus/alertmanager/current/alertmanager \
+--config.file=/etc/prometheus/alertmanager/alertmanager.yml \
+--storage.path=/var/lib/prometheus/alertmanager/
 SyslogIdentifier=prometheus-alertmanager
 Restart=always
 
