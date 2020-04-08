@@ -20,6 +20,8 @@ prometheus_alertmanager_log_dir: /var/log/prometheus
 prometheus_alertmanager_listen_address: ':9093'
 prometheus_alertmanager_external_url: 'http://localhost:9093/'
 
+prometheus_alertmanager_config_parts_src_dir: "{{ playbook_dir }}/files/alertmanager_config_parts"
+prometheus_alertmanager_templates_src_dir: "{{ playbook_dir }}/files/templates"
 prometheus_alertmanager_templates_files: []
 
 prometheus_alertmanager_resolve_timeout: 5m
