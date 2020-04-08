@@ -61,7 +61,7 @@
     recurse: yes
     owner: "{{ prometheus_alertmanager_user}}"
     group: "{{ prometheus_alertmanager_group }}"
-  when: prometheus_alertmanager_updated | changed
+  when: prometheus_alertmanager_updated is changed
   
 - name: create symlink to the current release
   file:
